@@ -7,9 +7,9 @@ use Encode;
 use IP::QQWry::Decoded;
 use Carp qw( croak );
 
-binmode(STDIN,':encoding(utf8)');
-binmode(STDOUT,':encoding(utf8)');
-binmode(STDERR,':encoding(utf8)');
+binmode(STDIN,  ':encoding(utf8)');
+binmode(STDOUT, ':encoding(utf8)');
+binmode(STDERR, ':encoding(utf8)');
 
 my $qqwry = IP::QQWry::Decoded->new('qqwry.dat', 'gbk');
 
@@ -17,20 +17,17 @@ open my $out_fh, '>>', 'ipinfo.txt'
     or croak "Can't open file: $!";
 
 while (<DATA>) {
-    my $ip = $_;
-    chomp($ip);
-    
-    my $no = $.;
-    
+    my $ip   = chomp($_);
+    my $no   = $.;
     my $info = $qqwry->query($ip);
+    my $pro  = qw{ };
     
-    my $province = qw{ };
     if ( $info =~ /^(.*?省|宁夏|广西|新疆|内蒙古|.*?市)/ ) {
-        $province = $1;
+        $pro = $1;
     }
     
-    print           "$no\t$ip\t$info\t$province\n";
-    print {$out_fh} "$no\t$ip\t$info\t$province\n";
+    print           "$no\t$ip\t$info\t$pro\n";
+    print {$out_fh} "$no\t$ip\t$info\t$pro\n";
     $out_fh->autoflush(1);
 }
 
